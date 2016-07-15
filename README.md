@@ -7,5 +7,5 @@ Bot Link :arrow_right: [TruckersMPBot](https://telegram.me/TruckersMPBot)
 
 # Screenshots
 
-[img](img/Screenshot2.jpg)
-[img](img/Screenshot1.jpg)
+<img src="https://raw.githubusercontent.com/EdoaXYZ/TruckersMPBot/master/img/Screenshot2.jpg" width=250>
+<img src="https://raw.githubusercontent.com/EdoaXYZ/TruckersMPBot/master/img/Screeshot1.jpg" width=250>
