@@ -6,3 +6,6 @@ If you have any problem contact [@EdoardoGrassiXYZ](https://telegram.me/EdoardoG
 Bot Link :arrow_right: [TruckersMPBot](https://telegram.me/TruckersMPBot)
 
 # Screenshots
+
+[img](img/Screenshot2.jpg)
+[img](img/Screenshot1.jpg)
