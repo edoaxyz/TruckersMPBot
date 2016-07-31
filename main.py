@@ -1,9 +1,10 @@
+# Version 3.1 - added security feauters
 # !/usr/bin/python
 # -*- coding: utf-8 -*-
 import urllib
 import json
 import telepot
-import time
+from threading import Timer
 import os
 from bs4 import BeautifulSoup
 from mechanize import Browser
@@ -11,8 +12,9 @@ from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 
 bot = telepot.Bot('insert_bot_token_here')
 
-serverboolean = False
+serverboolean = {}
 inlinedata = {}
+usersblocked = {}
 
 # /start command
 
@@ -27,7 +29,7 @@ def start(msg):
 def restart(msg):
 	global serverboolean
 	chat_id = msg['chat']['id']
-	serverboolean = False
+	serverboolean[chat_id] = False
 	emo = u"\U0001f69a" + " "
 	restart_keyboard = {'keyboard':[[u"\U0001f4ca"+" Servers Stats",u"\u23f0"+" Game Time"],[u"\U0001f69a"+" "+u"\U0001f69a"+" Convoys List",u"\U0001f6e3"+" Kat_pw Stream Preview"],[u"\u2139\ufe0f"+" General Information"]]}
 	bot.sendMessage(chat_id, emo*6, reply_markup=restart_keyboard)
@@ -62,14 +64,14 @@ def serversstats(msg):
 			break
 	server_keyboard = {'keyboard': inviareprimo }
 	bot.sendMessage(chat_id, "Choose the server:", reply_markup=server_keyboard)
-	serverboolean = True
+	serverboolean[chat_id] = True
 
 # Send the stats of the chosen server
 
 def serversstats1(msg):
 	global serverboolean
-	serverboolean = False
 	chat_id = msg['chat']['id']
+	serverboolean[chat_id] = True
 	bot.sendChatAction(chat_id, 'typing')
 	text = msg['text']
 	response = urllib.urlopen("http://api.truckersmp.com/v2/servers")
@@ -168,7 +170,7 @@ def gettwitch(msg):
 
 def geninformation(msg):
 	message = "Bot created by @EdoardoGrassiXYZ\n"
-	message += u"\U0001f539" + "Bot version: 0.3 _alpha_\n"
+	message += u"\U0001f539" + "Bot version: 0.3.1 _alpha_\n"
 	chat_id = msg["chat"]["id"]
 	response = urllib.urlopen("https://api.truckersmp.com/v2/version")
 	stringa = response.read()
@@ -333,27 +335,29 @@ def convoylist3(msg):
 
 def spartirichieste(msg):
 	try:
-		testo = msg['text']
-		testo1 = testo.encode('utf-8')
-		print "The bot has received a message from @"+str(msg['from']['username'])+"("+str(msg['from']['first_name'])+" "+str(msg['from']['last_name'])+") with chat id "+str(msg['from']['id'])+" with text: "+testo1
-		if msg['text'] == "/start":
-			start(msg)
-		elif " Servers Stats" in msg['text']:
-			serversstats(msg)
-		elif " Game Time" in msg['text']:
-			gametime(msg)
-		elif " Kat_pw Stream Preview" in msg['text']:
-			gettwitch(msg)
-		elif " Convoys List" in msg['text']:
-			convoylist(msg)
-		elif "Main Menu" in msg['text']:
-			restart(msg)
-		elif "General Information" in msg['text']:
-			geninformation(msg)
-		elif serverboolean == True:
-			serversstats1(msg)
-		elif msg['text'] == "/restart":
-			restart(msg)
+		chat_id = msg['chat']['id']
+		if chat_id not in usersblocked or usersblocked[chat_id] == False:
+			usersblocked[chat_id] = True
+			timer = Timer(3, noblock, args=(chat_id,))
+			timer.start()
+			if msg['text'] == "/start":
+				start(msg)
+			elif " Servers Stats" in msg['text']:
+				serversstats(msg)
+			elif " Game Time" in msg['text']:
+				gametime(msg)
+			elif " Kat_pw Stream Preview" in msg['text']:
+				gettwitch(msg)
+			elif " Convoys List" in msg['text']:
+				convoylist(msg)
+			elif "General Information" in msg['text']:
+				geninformation(msg)
+			elif msg['text'] == "/restart":
+				restart(msg)
+			elif serverboolean[chat_id] == True:
+				serversstats1(msg)
+		else:
+			bot.sendMessage(msg['chat']['id'],"Please wait some seconds.")
 	except KeyError:
 		pass
 	try:
