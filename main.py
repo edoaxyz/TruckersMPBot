@@ -1,4 +1,4 @@
-# Version 3.1 - added security feauters
+# Version 3.1 - added security features
 # !/usr/bin/python
 # -*- coding: utf-8 -*-
 import urllib
